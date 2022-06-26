@@ -27,3 +27,10 @@ describe('greet', () => {
 		expect(greeting).toContain('Welcome');
 	});
 });
+
+describe('getCurrencies', () => {
+	it('contains valid currencies', () => {
+		const res = lib.getCurrencies();
+		expect(res).toEqual(expect.arrayContaining(['USD', 'AUD', 'EUR']));
+	});
+});
