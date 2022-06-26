@@ -16,3 +16,14 @@ describe('absolute', () => {
 		expect(result).toBe(0);
 	});
 });
+
+describe('greet', () => {
+	it('should return greeting message', () => {
+		const greeting = lib.greet('Deepank');
+		expect(greeting).toMatch(/Deepank/);
+	});
+	it('should return greeting without name', () => {
+		const greeting = lib.greet('');
+		expect(greeting).toContain('Welcome');
+	});
+});
