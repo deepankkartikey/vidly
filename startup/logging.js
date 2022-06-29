@@ -25,7 +25,7 @@ module.exports = function () {
 
 	const logger = winston.createLogger({
 		level: 'info',
-		// format: winston.format.json(),
+		format: winston.format.json(),
 		defaultMeta: { service: 'vidly-service' },
 		transports: [
 			//
@@ -43,6 +43,7 @@ module.exports = function () {
 			})
 		);
 	}
+	winston.add(logger);
 	// winston.add(new winston.transports.File({ filename: 'logfile.log' }));
 	// winston.add(
 	// 	new winston.transports.MongoDB({ db: 'mongodb://localhost/vidly' })
