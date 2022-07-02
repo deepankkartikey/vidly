@@ -62,6 +62,7 @@ describe('/api/genres', () => {
 				.send({ name: 'genre1' });
 			expect(res.status).toBe(401);
 		});
+
 		it('should return 400 if genre is less than 5 characters', async () => {
 			const user = new User({ name: 'Test1', isAdmin: true });
 			const token = generateAuthToken(user);
@@ -79,6 +80,30 @@ describe('/api/genres', () => {
 				.set('x-auth-token', token)
 				.send({ name: new Array(52).join('x') });
 			expect(res.status).toBe(400);
+		});
+
+		it('should save genre if it is valid', async () => {
+			const user = new User({ name: 'Test1', isAdmin: true });
+			const token = generateAuthToken(user);
+			const res = await request(server)
+				.post('/api/genres')
+				.set('x-auth-token', token)
+				.send({ name: 'genre1' });
+
+			const genre = await Genre.find({ name: 'genre1' });
+			expect(genre).not.toBeNull();
+		});
+
+		it('should return genre if it is valid', async () => {
+			const user = new User({ name: 'Test1', isAdmin: true });
+			const token = generateAuthToken(user);
+			const res = await request(server)
+				.post('/api/genres')
+				.set('x-auth-token', token)
+				.send({ name: 'genre1' });
+
+			expect(res.body).toHaveProperty('_id');
+			expect(res.body).toHaveProperty('name', 'genre1');
 		});
 	});
 });
