@@ -1,5 +1,6 @@
 // POST /api/returns {customerId, movieId}
 
+const { now } = require('lodash');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const { Rental } = require('../../models/rental');
@@ -105,5 +106,18 @@ describe('/api/returns', () => {
 		await Rental.remove({});
 		const res = await exec();
 		expect(res.status).toBe(404);
+	});
+
+	it('should return 200, if we have valid request', async () => {
+		const res = await exec();
+		expect(res.status).toBe(200);
+	});
+
+	it('should set returnDate, if request is valid', async () => {
+		const res = await exec();
+		const rentalInDB = await Rental.findById(rental._id);
+		const currentTime = new Date();
+		const diff = currentTime - rentalInDB.dateReturned; // in milliseconds
+		expect(diff).toBeLessThan(10 * 1000);
 	});
 });
