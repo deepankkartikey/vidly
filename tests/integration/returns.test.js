@@ -6,6 +6,7 @@ const request = require('supertest');
 const { Rental } = require('../../models/rental');
 const { User, generateAuthToken } = require('../../models/user');
 const moment = require('moment');
+const { Movie } = require('../../models/movie');
 
 /* UNAUTHORIZED
     - Returns 401 if client is not logged in
@@ -32,6 +33,7 @@ describe('/api/returns', () => {
 	let server;
 	let customerId;
 	let movieId;
+	let movie;
 	let rental;
 	let token;
 
@@ -50,6 +52,15 @@ describe('/api/returns', () => {
 
 		const user = new User();
 		token = generateAuthToken(user);
+
+		movie = new Movie({
+			_id: movieId,
+			title: 'xyxyz',
+			dailyRentalRate: 2,
+			genre: { name: '12345' },
+			numberInStock: 10,
+		});
+		await movie.save();
 
 		rental = new Rental({
 			customer: {
@@ -130,5 +141,12 @@ describe('/api/returns', () => {
 
 		const rentalInDB = await Rental.findById(rental._id);
 		expect(rentalInDB.rentalFee).toBe(14);
+	});
+
+	it('should increase movie stock when rental is returned', async () => {
+		const res = await exec();
+
+		const movieInDB = await Movie.findById(movieId);
+		expect(movieInDB.numberInStock).toBe(movie.numberInStock + 1);
 	});
 });
