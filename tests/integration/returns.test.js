@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const { Rental } = require('../../models/rental');
 const { User, generateAuthToken } = require('../../models/user');
+const moment = require('moment');
 
 /* UNAUTHORIZED
     - Returns 401 if client is not logged in
@@ -19,7 +20,7 @@ const { User, generateAuthToken } = require('../../models/user');
 
    VALID REQUEST
    - Returns 200 if valid request
-   - Set the return date and calculate rental fee on server side
+   - Set the return date and calculate rental fee (noOfDays * dailyRentalRate) on server side
    - Increase the Stock
    - Return the Rental
 
@@ -119,5 +120,15 @@ describe('/api/returns', () => {
 		const currentTime = new Date();
 		const diff = currentTime - rentalInDB.dateReturned; // in milliseconds
 		expect(diff).toBeLessThan(10 * 1000);
+	});
+
+	it('should calculate and set rentalFee, if request is valid', async () => {
+		rental.dateOut = moment().add(-7, 'days').toDate();
+		await rental.save();
+
+		const res = await exec();
+
+		const rentalInDB = await Rental.findById(rental._id);
+		expect(rentalInDB.rentalFee).toBe(14);
 	});
 });
