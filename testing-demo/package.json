@@ -10,7 +10,7 @@
     "jest": "^28.1.1"
   },
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
