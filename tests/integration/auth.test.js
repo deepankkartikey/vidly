@@ -14,11 +14,11 @@ describe('auth Middleware', () => {
 
 	afterEach(async () => {
 		await Genre.remove({});
-		server.close();
+		await server.close();
 	});
 
-	afterAll(() => {
-		mongoose.connection.close();
+	afterAll(async () => {
+		await mongoose.connection.close();
 	});
 
 	const execute = () => {
