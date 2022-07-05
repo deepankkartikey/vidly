@@ -77,12 +77,12 @@ describe('/api/returns', () => {
 		await rental.save();
 	});
 	afterEach(async () => {
-		server.close();
+		await server.close();
 		await Rental.remove({}); // clean up the db
 		await Movie.remove({});
 	});
-	afterAll(() => {
-		mongoose.connection.close();
+	afterAll(async () => {
+		await mongoose.connection.close();
 	});
 
 	it('should work', async () => {
@@ -153,7 +153,6 @@ describe('/api/returns', () => {
 
 	it('should return rental if input is valid', async () => {
 		const res = await exec();
-		const rentalInDB = await Rental.findById(rental._id);
 		expect(Object.keys(res.body)).toEqual(
 			expect.arrayContaining([
 				'dateOut',
